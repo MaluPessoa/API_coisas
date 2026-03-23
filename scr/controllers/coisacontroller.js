@@ -63,7 +63,7 @@ async function buscarPorId(req, res) {
 // ============================================================
 async function criar(req, res) {
   try {
-    const { nomec, tipoc, valor, dtcoisa } = req.body;
+    const { nomec, tipoc, valor, dtcoisa, qntc } = req.body;
     
     // Validações ANTES de tentar inserir no banco
     if (!nomec || !tipoc || !valor || !dtcoisa || !qntc) {
