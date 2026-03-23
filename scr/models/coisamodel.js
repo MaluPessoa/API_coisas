@@ -50,26 +50,26 @@ function buscarPorId(id) {
 // ============================================================
 // FUNÇÃO: criar
 // DESCRIÇÃO: Insere um novo coisa no banco
-// PARÂMETRO: dados (objeto) - contém nome, preco, estoque, categoria
+// PARÂMETRO: dados (objeto) - contém nomec, tipoc, valor, dtcoisa
 // RETORNO: Promise que resolve com o coisa criado (com ID)
 // ============================================================
 function criar(dados) {
   return new Promise((resolve, reject) => {
     // Desestruturar os dados
-    const { nome, preco, estoque, categoria } = dados;
+    const { nomec, tipoc, valor, dtcoisa, qntc } = dados;
     
     // SQL: INSERT adiciona novo registro
     // IMPORTANTE: NÃO incluímos o ID aqui porque ele é AUTOINCREMENT
     // O SQLite gera o ID automaticamente!
     const sql = `
-      INSERT INTO coisa (nome, preco, estoque, categoria)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO coisa (nomec, tipoc, valor, dtcoisa, qntc)
+      VALUES (?, ?, ?, ?, ?)
     `;
     
     // db.run() executa comandos INSERT/UPDATE/DELETE
     // IMPORTANTE: usar 'function' tradicional (não arrow function)
     // para ter acesso ao 'this.lastID'
-    db.run(sql, [nome, preco, estoque, categoria], function(erro) {
+    db.run(sql, [nomec, tipoc, valor, dtcoisa, qntc], function(erro) {
       if (erro) {
         reject(erro);
       } else {
@@ -77,10 +77,11 @@ function criar(dados) {
         // para o registro que acabamos de inserir
         resolve({
           id: this.lastID,
-          nome,
-          preco,
-          estoque,
-          categoria
+          nomec,
+          tipoc,
+          valor,
+          dtcoisa,
+          qntc
         });
       }
     });
@@ -92,8 +93,8 @@ function criar(dados) {
 // Isso significa que o BANCO DE DADOS é responsável por gerar o próximo ID.
 // 
 // Por isso:
-// ❌ NÃO fazemos: INSERT INTO coisas (id, nome, ...) VALUES (?, ?, ...)
-// ✅ Fazemos: INSERT INTO coisas (nome, preco, ...) VALUES (?, ?, ...)
+// ❌ NÃO fazemos: INSERT INTO coisas (id, nomec, ...) VALUES (?, ?, ...)
+// ✅ Fazemos: INSERT INTO coisas (nomec, tipoc, ...) VALUES (?, ?, ...)
 //
 // O SQLite adiciona o ID automaticamente e podemos recuperá-lo usando this.lastID
 
@@ -107,17 +108,17 @@ function criar(dados) {
 // ============================================================
 function atualizar(id, dados) {
   return new Promise((resolve, reject) => {
-    const { nome, preco, estoque, categoria } = dados;
+    const { nomec, tipoc, valor, dtcoisa, qntc } = dados;
     
     // SQL: UPDATE modifica um registro existente
     const sql = `
       UPDATE coisa
-      SET nome = ?, preco = ?, estoque = ?, categoria = ?
+      SET nomec = ?, tipoc = ?, valor = ?, dtcoisa = ? qntc = ?
       WHERE id = ?
     `;
     
     // Passar os parâmetros na ordem dos placeholders
-    db.run(sql, [nome, preco, estoque, categoria, id], function(erro) {
+    db.run(sql, [nomec, tipoc, valor, dtcoisa, qntc, id], function(erro) {
       if (erro) {
         reject(erro);
       } else if (this.changes === 0) {
@@ -126,7 +127,7 @@ function atualizar(id, dados) {
         resolve(null);
       } else {
         // coisa atualizado com sucesso
-        resolve({ id, nome, preco, estoque, categoria });
+        resolve({ id, nomec, tipoc, valor, dtcoisa, qntc });
       }
     });
   });
@@ -155,18 +156,18 @@ function deletar(id) {
 }
 
 // ============================================================
-// FUNÇÃO: buscarPorCategoria
-// DESCRIÇÃO: Filtra coisas por categoria
-// PARÂMETRO: categoria (string)
+// FUNÇÃO: buscarPordtcoisa
+// DESCRIÇÃO: Filtra coisas por dtcoisa
+// PARÂMETRO: dtcoisa (string)
 // RETORNO: Promise com array de coisas
 // ============================================================
-function buscarPorCategoria(categoria) {
+function buscarPordtcoisa(dtcoisa) {
   return new Promise((resolve, reject) => {
     // LIKE permite busca com padrão
     // O % significa "qualquer texto antes/depois"
-    const sql = 'SELECT * FROM coisas WHERE categoria LIKE ?';
+    const sql = 'SELECT * FROM coisas WHERE dtcoisa LIKE ?';
     
-    db.all(sql, [`%${categoria}%`], (erro, linhas) => {
+    db.all(sql, [`%${dtcoisa}%`], (erro, linhas) => {
       if (erro) {
         reject(erro);
       } else {
@@ -185,5 +186,5 @@ module.exports = {
   criar,
   atualizar,
   deletar,
-  buscarPorCategoria
+  buscarPordtcoisa
 };

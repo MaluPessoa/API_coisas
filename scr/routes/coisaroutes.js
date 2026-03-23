@@ -11,13 +11,13 @@ const coisaController = require('../controllers/coisacontroller');
 // ============================================================
 
 // IMPORTANTE: rotas mais específicas devem vir ANTES das genéricas!
-// '/categoria/:cat' deve vir antes de '/:id'
+// '/dtcoisa/:cat' deve vir antes de '/:id'
 
 // GET /coisas - Listar todos os coisas
 router.get('/', coisaController.listarTodos);
 
-// GET /coisas/categoria/:categoria - Buscar por categoria
-router.get('/categoria/:categoria', coisaController.buscarPorCategoria);
+// GET /coisas/dtcoisa/:dtcoisa - Buscar por dtcoisa
+router.get('/dtcoisa/:dtcoisa', coisaController.buscarPordtcoisa);
 
 // GET /coisas/:id - Buscar coisa específico por ID
 router.get('/:id', coisaController.buscarPorId);

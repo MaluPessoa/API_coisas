@@ -63,33 +63,34 @@ async function buscarPorId(req, res) {
 // ============================================================
 async function criar(req, res) {
   try {
-    const { nome, preco, estoque, categoria } = req.body;
+    const { nomec, tipoc, valor, dtcoisa } = req.body;
     
     // Validações ANTES de tentar inserir no banco
-    if (!nome || !preco || !estoque || !categoria) {
+    if (!nomec || !tipoc || !valor || !dtcoisa || !qntc) {
       return res.status(400).json({ 
         mensagem: 'Todos os campos são obrigatórios' 
       });
     }
     
-    if (parseFloat(preco) <= 0) {
+    if (parseFloat(tipoc) <= 0) {
       return res.status(400).json({ 
         mensagem: 'O preço deve ser maior que zero' 
       });
     }
     
-    if (parseInt(estoque) < 0) {
+    if (parseInt(valor) < 0) {
       return res.status(400).json({ 
-        mensagem: 'O estoque não pode ser negativo' 
+        mensagem: 'O valor não pode ser negativo' 
       });
     }
     
     // Aguardar a inserção no banco
     const novocoisa = await coisaModel.criar({ 
-      nome, 
-      preco, 
-      estoque, 
-      categoria 
+      nomec, 
+      tipoc, 
+      valor, 
+      dtcoisa,
+      qntc 
     });
     
     // Retornar o coisa criado com status 201
@@ -109,7 +110,7 @@ async function criar(req, res) {
 async function atualizar(req, res) {
   try {
     const id = parseInt(req.params.id);
-    const { nome, preco, estoque, categoria } = req.body;
+    const { nomec, tipoc, valor, dtcoisa, qntc } = req.body;
     
     // Validações
     if (isNaN(id)) {
@@ -118,7 +119,7 @@ async function atualizar(req, res) {
       });
     }
     
-    if (!nome || !preco || !estoque || !categoria) {
+    if (!nomec || !tipoc || !valor || !dtcoisa || !qntc) {
       return res.status(400).json({ 
         mensagem: 'Todos os campos são obrigatórios' 
       });
@@ -126,10 +127,11 @@ async function atualizar(req, res) {
     
     // Aguardar a atualização no banco
     const coisaAtualizado = await coisaModel.atualizar(id, { 
-      nome, 
-      preco, 
-      estoque, 
-      categoria 
+      nomec, 
+      tipoc, 
+      valor, 
+      dtcoisa,
+      qntc 
     });
     
     if (coisaAtualizado) {
@@ -182,20 +184,20 @@ async function deletar(req, res) {
 }
 
 // ============================================================
-// FUNÇÃO: buscarPorCategoria (ASSÍNCRONA)
-// ROTA: GET /coisas/categoria/:categoria
+// FUNÇÃO: buscarPordtcoisa (ASSÍNCRONA)
+// ROTA: GET /coisas/dtcoisa/:dtcoisa
 // ============================================================
-async function buscarPorCategoria(req, res) {
+async function buscarPordtcoisa(req, res) {
   try {
-    const { categoria } = req.params;
+    const { dtcoisa } = req.params;
     
     // Aguardar a busca no banco
-    const coisas = await coisaModel.buscarPorCategoria(categoria);
+    const coisas = await coisaModel.buscarPordtcoisa(dtcoisa);
     
     res.status(200).json(coisas);
   } catch (erro) {
     res.status(500).json({ 
-      mensagem: 'Erro ao buscar coisas por categoria',
+      mensagem: 'Erro ao buscar coisas por dtcoisa',
       erro: erro.message 
     });
   }
@@ -210,5 +212,5 @@ module.exports = {
   criar,
   atualizar,
   deletar,
-  buscarPorCategoria
+  buscarPordtcoisa
 };
